@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>BudgetWise</title>
+    <meta name="theme-color" content="#0a84ff" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <header class="app-header">
+        <div class="app-header__top">
+          <h1 class="app-title">BudgetWise</h1>
+          <button
+            class="icon-button"
+            id="exportButton"
+            aria-label="Export data"
+          >
+            <span class="icon icon-export" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="month-switcher">
+          <button
+            class="month-switcher__button"
+            id="prevMonthButton"
+            aria-label="Previous month"
+          >
+            ‹
+          </button>
+          <div class="month-switcher__label" id="currentMonthLabel"></div>
+          <button
+            class="month-switcher__button"
+            id="nextMonthButton"
+            aria-label="Next month"
+          >
+            ›
+          </button>
+        </div>
+      </header>
+
+      <main class="app-main" id="panelContainer">
+        <section
+          id="panel-dashboard"
+          class="panel panel--active"
+          role="tabpanel"
+          aria-labelledby="nav-dashboard"
+        >
+          <div class="dashboard-cards" id="dashboardCards"></div>
+          <section class="quick-log" aria-labelledby="quick-log-title">
+            <div class="panel-heading">
+              <h2 id="quick-log-title">Quick Log</h2>
+              <button class="link-button" id="manageRecurringButton">
+                Manage
+              </button>
+            </div>
+            <div class="quick-log__chips" id="quickLogChips"></div>
+          </section>
+          <section class="dashboard-charts" id="dashboardCharts"></section>
+          <section
+            class="recent-activity"
+            aria-labelledby="recent-activity-title"
+          >
+            <div class="panel-heading">
+              <h2 id="recent-activity-title">Recent Activity</h2>
+              <button class="link-button" id="viewActivityButton">
+                View all
+              </button>
+            </div>
+            <ul class="activity-list" id="recentActivityList"></ul>
+          </section>
+        </section>
+
+        <section
+          id="panel-add"
+          class="panel"
+          role="tabpanel"
+          aria-labelledby="nav-add"
+        >
+          <div class="segmented-control" role="tablist">
+            <button
+              class="segmented-control__item segmented-control__item--active"
+              role="tab"
+              id="addIncomeTab"
+              aria-controls="addIncomePanel"
+            >
+              Income
+            </button>
+            <button
+              class="segmented-control__item"
+              role="tab"
+              id="addExpenseTab"
+              aria-controls="addExpensePanel"
+            >
+              Expense
+            </button>
+          </div>
+          <div class="add-panel" id="addIncomePanel" role="tabpanel">
+            <form id="incomeForm" class="form-card" novalidate>
+              <label class="input-field">
+                <span>Amount</span>
+                <input
+                  type="text"
+                  name="amount"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  required
+                />
+              </label>
+              <label class="input-field">
+                <span>Source (optional)</span>
+                <input type="text" name="description" autocomplete="off" />
+              </label>
+              <button type="submit" class="primary-button">
+                Save income
+              </button>
+            </form>
+          </div>
+          <div
+            class="add-panel add-panel--hidden"
+            id="addExpensePanel"
+            role="tabpanel"
+            hidden
+          >
+            <form id="expenseForm" class="form-card" novalidate>
+              <label class="input-field">
+                <span>Amount</span>
+                <input
+                  type="text"
+                  name="amount"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  required
+                />
+              </label>
+              <label class="input-field">
+                <span>Category</span>
+                <select name="category" id="expenseCategorySelect"></select>
+              </label>
+              <label class="input-field">
+                <span>Note (optional)</span>
+                <input type="text" name="description" autocomplete="off" />
+              </label>
+              <button type="submit" class="primary-button">
+                Save expense
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section
+          id="panel-activity"
+          class="panel"
+          role="tabpanel"
+          aria-labelledby="nav-activity"
+        >
+          <div class="panel-heading">
+            <h2>Activity</h2>
+          </div>
+          <ul class="activity-list activity-list--grouped" id="activityList">
+            <li class="empty-state" id="activityEmptyState">
+              No activity yet.
+            </li>
+          </ul>
+          <button class="secondary-button" id="loadMoreActivityButton" hidden>
+            Load more
+          </button>
+        </section>
+
+        <section
+          id="panel-categories"
+          class="panel"
+          role="tabpanel"
+          aria-labelledby="nav-categories"
+        >
+          <div class="panel-heading">
+            <h2>Categories</h2>
+            <button class="primary-button primary-button--small" id="newCategoryButton">
+              Add category
+            </button>
+          </div>
+          <ul class="category-list" id="categoryList"></ul>
+        </section>
+
+        <section
+          id="panel-settings"
+          class="panel"
+          role="tabpanel"
+          aria-labelledby="nav-settings"
+        >
+          <div class="panel-heading">
+            <h2>Settings</h2>
+          </div>
+
+          <section class="settings-section" aria-labelledby="settings-general">
+            <h3 id="settings-general">General</h3>
+            <form id="settingsForm" class="settings-form" novalidate>
+              <label class="input-field">
+                <span>Currency</span>
+                <input type="text" name="currency" maxlength="5" />
+              </label>
+              <label class="input-field">
+                <span>Locale</span>
+                <input type="text" name="locale" />
+              </label>
+              <label class="input-field">
+                <span>First day of week</span>
+                <select name="firstDayOfWeek">
+                  <option value="0">Sunday</option>
+                  <option value="1">Monday</option>
+                </select>
+              </label>
+              <div class="rule-inputs">
+                <p>50/30/20 rule</p>
+                <div class="rule-inputs__row">
+                  <label>
+                    <span>Necessities</span>
+                    <input type="number" name="rule-necessities" min="0" max="100" />
+                  </label>
+                  <label>
+                    <span>Leisure</span>
+                    <input type="number" name="rule-leisure" min="0" max="100" />
+                  </label>
+                  <label>
+                    <span>Savings</span>
+                    <input type="number" name="rule-savings" min="0" max="100" />
+                  </label>
+                </div>
+              </div>
+              <label class="toggle-field">
+                <input type="checkbox" name="showAdvancedCharts" />
+                <span>Show advanced charts</span>
+              </label>
+              <label class="toggle-field">
+                <input type="checkbox" name="hapticFeedback" />
+                <span>Enable haptic-style feedback</span>
+              </label>
+              <button type="submit" class="primary-button">
+                Save settings
+              </button>
+            </form>
+          </section>
+
+          <section class="settings-section" aria-labelledby="settings-data">
+            <h3 id="settings-data">Data</h3>
+            <div class="settings-actions">
+              <button class="secondary-button" id="importButton">
+                Import data
+              </button>
+              <button class="destructive-button" id="resetButton">
+                Reset app
+              </button>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <nav class="tab-bar" role="tablist" aria-label="Main navigation">
+        <button
+          id="nav-dashboard"
+          class="tab-bar__item tab-bar__item--active"
+          data-target="panel-dashboard"
+          role="tab"
+          aria-selected="true"
+        >
+          <span class="icon icon-dashboard" aria-hidden="true"></span>
+          <span class="tab-bar__label">Dashboard</span>
+        </button>
+        <button
+          id="nav-add"
+          class="tab-bar__item"
+          data-target="panel-add"
+          role="tab"
+          aria-selected="false"
+        >
+          <span class="icon icon-add" aria-hidden="true"></span>
+          <span class="tab-bar__label">Add</span>
+        </button>
+        <button
+          id="nav-activity"
+          class="tab-bar__item"
+          data-target="panel-activity"
+          role="tab"
+          aria-selected="false"
+        >
+          <span class="icon icon-activity" aria-hidden="true"></span>
+          <span class="tab-bar__label">Activity</span>
+        </button>
+        <button
+          id="nav-categories"
+          class="tab-bar__item"
+          data-target="panel-categories"
+          role="tab"
+          aria-selected="false"
+        >
+          <span class="icon icon-categories" aria-hidden="true"></span>
+          <span class="tab-bar__label">Categories</span>
+        </button>
+        <button
+          id="nav-settings"
+          class="tab-bar__item"
+          data-target="panel-settings"
+          role="tab"
+          aria-selected="false"
+        >
+          <span class="icon icon-settings" aria-hidden="true"></span>
+          <span class="tab-bar__label">Settings</span>
+        </button>
+      </nav>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <div id="dialogLayer" class="dialog-layer" aria-live="polite"></div>
+
+    <input
+      type="file"
+      id="importFileInput"
+      accept="application/json"
+      hidden
+    />
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

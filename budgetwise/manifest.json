@@ -1,0 +1,16 @@
+{
+  "name": "BudgetWise",
+  "short_name": "BudgetWise",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "scope": "./",
+  "background_color": "#0a84ff",
+  "theme_color": "#0a84ff",
+  "icons": [
+    {
+      "src": "icons/add.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
