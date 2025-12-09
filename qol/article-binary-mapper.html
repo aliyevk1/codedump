@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Binary Mapper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        input[type="text"] {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        .info {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .error {
+            background: #ffe0e0;
+            border-left: 4px solid #ff4444;
+            padding: 12px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #c00;
+            display: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .output-group {
+            margin-top: 30px;
+        }
+
+        .output {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .stat {
+            background: #f0f4ff;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        .stat strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Article Binary Mapper</h1>
+        <p class="subtitle">Remove or keep articles (the, a, an) based on your binary pattern</p>
+
+        <div class="info">
+            <strong>How it works:</strong> Articles at sentence starts and before special words (best, most, first, only, same, last, next) are always kept. Binary map: 1 = keep, 0 = remove.
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="input-group">
+            <label for="binaryMap">Binary Map (minimum 10 digits)</label>
+            <input type="text" id="binaryMap" placeholder="10101010101010" value="10101010101010">
+        </div>
+
+        <div class="input-group">
+            <label for="inputText">Input Text</label>
+            <textarea id="inputText" placeholder="Enter your text here... For example: The cat sat on the mat. A bird flew over the house. The best way to learn is through practice.">The cat sat on the mat. A bird flew over the house. The best way to learn is through practice. An apple a day keeps the doctor away. The first step is always the hardest. The most important thing is to keep trying.</textarea>
+        </div>
+
+        <button onclick="processText()">Process Text</button>
+
+        <div class="output-group">
+            <label>Output</label>
+            <div class="output" id="output">Processed text will appear here...</div>
+            <div class="stats">
+                <div class="stat">Articles found: <strong id="foundCount">0</strong></div>
+                <div class="stat">Articles removed: <strong id="removedCount">0</strong></div>
+                <div class="stat">Articles kept: <strong id="keptCount">0</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Words that must always have an article before them
+        const protectedWords = ['best', 'most', 'first', 'only', 'same', 'last', 'next'];
+
+        function processText() {
+            const binaryMap = document.getElementById('binaryMap').value.trim();
+            const inputText = document.getElementById('inputText').value;
+            const errorDiv = document.getElementById('error');
+            const outputDiv = document.getElementById('output');
+
+            // Validate binary map
+            if (!/^[01]+$/.test(binaryMap)) {
+                showError('Binary map must contain only 0s and 1s');
+                return;
+            }
+
+            if (binaryMap.length < 10) {
+                showError('Binary map must be at least 10 digits long');
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+
+            let result = inputText;
+            let mapIndex = 0;
+            let foundCount = 0;
+            let removedCount = 0;
+            let keptCount = 0;
+
+            // Process the text
+            const articlePattern = /\b(the|a|an)\b/gi;
+            let match;
+            let offset = 0;
+
+            const matches = [];
+            while ((match = articlePattern.exec(inputText)) !== null) {
+                matches.push({
+                    article: match[0],
+                    index: match.index,
+                    length: match[0].length
+                });
+            }
+
+            for (const match of matches) {
+                foundCount++;
+                const article = match.article;
+                const index = match.index + offset;
+                
+                // Check if article starts a sentence
+                const beforeText = result.substring(0, index).trim();
+                const startsSetence = beforeText === '' || /[.!?]\s*$/.test(beforeText);
+
+                if (startsSetence) {
+                    keptCount++;
+                    continue;
+                }
+
+                // Check if article is before a protected word
+                const afterIndex = index + article.length;
+                const afterText = result.substring(afterIndex).trim();
+                const nextWord = afterText.split(/\s+/)[0]?.toLowerCase().replace(/[.,!?;:]/, '');
+                
+                if (protectedWords.includes(nextWord)) {
+                    keptCount++;
+                    continue;
+                }
+
+                // Apply binary map
+                const binaryValue = binaryMap[mapIndex % binaryMap.length];
+                mapIndex++;
+
+                if (binaryValue === '0') {
+                    // Remove the article and following space
+                    const spaceAfter = result[afterIndex] === ' ' ? 1 : 0;
+                    result = result.substring(0, index) + result.substring(afterIndex + spaceAfter);
+                    offset -= (article.length + spaceAfter);
+                    removedCount++;
+                } else {
+                    keptCount++;
+                }
+            }
+
+            // Update output
+            outputDiv.textContent = result;
+            document.getElementById('foundCount').textContent = foundCount;
+            document.getElementById('removedCount').textContent = removedCount;
+            document.getElementById('keptCount').textContent = keptCount;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Process on load with example
+        window.onload = function() {
+            processText();
+        };
+    </script>
+</body>
+</html>

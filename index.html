@@ -1,33 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodeDump</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col items-center justify-center p-6">
-    <header class="text-center mb-10">
-      <h1 class="text-4xl font-semibold mb-2">CodeDump</h1>
-      <p class="text-slate-600">A collection of small personal projects</p>
-    </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 CodeDump - Quality of Life Tools 🌟</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <main class="grid gap-6 w-full max-w-md">
-      <a
-        href="budgetwise/index.html"
-        class="block rounded-lg bg-white p-6 shadow hover:shadow-md transition border border-slate-200"
-      >
-        <h2 class="text-xl font-semibold">BudgetWise</h2>
-        <p class="text-slate-600 mt-2 text-sm">Manage your finances with the 50/30/20 rule. Local storage only, mobile friendly.</p>
-      </a>
-    </main>
+        body {
+            font-family: 'Comic Sans MS', 'Comic Neue', cursive;
+            background: #000080;
+            color: #00ff00;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-    <footer class="mt-10 text-sm text-slate-500">
-      <p>&copy; <span id="year"></span> CodeDump by You</p>
-    </footer>
+        /* Starfield background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 60px 70px, #fff, transparent),
+                radial-gradient(1px 1px at 50px 50px, #ddd, transparent),
+                radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 90px 10px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: starScroll 200s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes starScroll {
+            from { transform: translateY(0); }
+            to { transform: translateY(200px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Marquee header */
+        .marquee-container {
+            background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            border: 5px ridge #ff00ff;
+            padding: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .marquee {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 20s linear infinite;
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            text-shadow: 2px 2px #fff;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Main header */
+        .header {
+            text-align: center;
+            background: linear-gradient(45deg, #ff0080, #8000ff, #0080ff, #00ff80);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+            border: 5px outset #ffff00;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px #ff00ff, inset 0 0 20px rgba(255,255,255,0.3);
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header h1 {
+            font-size: 48px;
+            color: #ffff00;
+            text-shadow: 3px 3px #ff0000, 6px 6px #00ff00, 9px 9px #0000ff;
+            animation: textGlitch 0.5s infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes textGlitch {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 2px); }
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #fff;
+            text-shadow: 2px 2px #000;
+        }
+
+        /* Blinking gif style divider */
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 30px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        /* Project grid */
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
+            border: 5px ridge #ffff00;
+            padding: 5px;
+            position: relative;
+            transform: rotate(-1deg);
+            transition: all 0.3s;
+            box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
+        }
+
+        .project-card:nth-child(even) {
+            transform: rotate(1deg);
+        }
+
+        .project-card:hover {
+            transform: rotate(0deg) scale(1.05);
+            box-shadow: 15px 15px 0 rgba(0,0,0,0.7);
+        }
+
+        .project-inner {
+            background: #000;
+            padding: 20px;
+            border: 3px solid #00ff00;
+        }
+
+        .project-card h2 {
+            color: #ff00ff;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-decoration: underline;
+            animation: colorCycle 2s infinite;
+        }
+
+        @keyframes colorCycle {
+            0%, 100% { color: #ff00ff; }
+            33% { color: #00ffff; }
+            66% { color: #ffff00; }
+        }
+
+        .project-card p {
+            color: #00ff00;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .project-card ul {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .project-card li {
+            color: #ffff00;
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .project-card li::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+            background-size: 400% 400%;
+            animation: rainbowShift 2s linear infinite;
+            color: #000;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-weight: bold;
+            border: 3px outset #fff;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 16px;
+            margin: 5px;
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+            transition: transform 0.1s;
+        }
+
+        @keyframes rainbowShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            border-style: inset;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Under construction */
+        .construction {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .construction img {
+            width: 100px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Hit counter */
+        .counter {
+            background: #000;
+            border: 3px solid #00ff00;
+            padding: 15px;
+            text-align: center;
+            margin: 30px auto;
+            max-width: 400px;
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        .counter-digits {
+            font-size: 32px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin: 50px 0 20px;
+            padding: 20px;
+            background: #000;
+            border: 3px dashed #ff00ff;
+        }
+
+        .footer a {
+            color: #00ffff;
+            text-decoration: underline;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            color: #ffff00;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Badges */
+        .badges {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #000;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 5px 15px;
+            margin: 5px;
+            font-size: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px #00ff00; }
+            50% { box-shadow: 0 0 20px #00ff00; }
+        }
+
+        /* Webring */
+        .webring {
+            background: linear-gradient(to right, #ff0000, #00ff00, #0000ff);
+            padding: 15px;
+            text-align: center;
+            border: 5px double #ffff00;
+            margin: 30px 0;
+        }
+
+        .webring span {
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 2px 2px #000;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="marquee-container">
+        <div class="marquee">
+            ✨ WELCOME TO CODEDUMP ✨ RANDOM STUFF I MADE ✨ 
+            UNDER CONSTRUCTION ✨ LAST UPDATED: DEC 2025 ✨ VISITOR #42069 ✨
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>💾 CodeDump 💾</h1>
+            <p>☆彡 Random Projects & Mini-Tools ☆彡</p>
+            <div class="badges">
+                <span class="badge">✓ OFFLINE READY</span>
+                <span class="badge">✓ NO BACKEND</span>
+                <span class="badge">✓ 100% CLIENT-SIDE</span>
+                <span class="badge">✓ JUST FOR FUN</span>
+            </div>
+        </div>
+
+        <div class="divider">★ ☆ ★ ☆ ★ ☆ ★ ☆ ★</div>
+
+        <div class="projects">
+            <!-- Main BudgetWise App -->
+            <div class="project-card">
+                <div class="project-inner">
+                    <h2>💰 BudgetWise 💰</h2>
+                    <p>Mobile-first offline budgeting companion with the 50/30/20 method!</p>
+                    <ul>
+                        <li>Dashboard with instant calculations</li>
+                        <li>Quick Log templates for recurring expenses</li>
+                        <li>Full data import/export (JSON)</li>
+                        <li>Month switching & infinite scroll</li>
+                        <li>Optional Chart.js visualizations</li>
+                        <li>Dark mode & accessibility support</li>
+                    </ul>
+                    <a href="budgetwise/index.html" class="btn">💸 LAUNCH APP 💸</a>
+                </div>
+            </div>
+
+            <!-- Article Binary Mapper -->
+            <div class="project-card">
+                <div class="project-inner">
+                    <h2>📝 Article Binary Mapper 📝</h2>
+                    <p>Transform your text with binary-controlled article removal!</p>
+                    <ul>
+                        <li>Input text + binary pattern (10+ digits)</li>
+                        <li>Smart grammar rules (sentence starts preserved)</li>
+                        <li>Protected words: best, most, first, only, etc.</li>
+                        <li>Live statistics & instant preview</li>
+                        <li>Binary map loops infinitely</li>
+                        <li>1 = keep article, 0 = remove it!</li>
+                    </ul>
+                    <a href="qol/article-binary-mapper.html" class="btn">🔥 TRY IT NOW 🔥</a>
+                </div>
+            </div>
+        </div>
+
+        <p style="visibility: hidden;">what are you doing here? ;)</p>
+
+        <div class="construction">
+            <p style="color: #ffff00; font-size: 20px;">🚧 MORE EXPERIMENTS COMING SOON 🚧</p>
+        </div>
+
+        <div class="counter">
+            <p style="color: #00ff00; margin-bottom: 10px;">YOU ARE VISITOR NUMBER:</p>
+            <div class="counter-digits" id="hitCounter">000042069</div>
+        </div>
+
+        <div class="webring">
+            <span>[ &lt;&lt; PREV ] [ RANDOM ] [ NEXT &gt;&gt; ]</span>
+            <br>
+            <span style="font-size: 14px;">This site is part of the CODE EXPERIMENTS RING</span>
+        </div>
+
+        <div class="footer">
+            <p style="color: #ff00ff; font-size: 18px; margin-bottom: 10px;">
+                ⚡ POWERED BY PURE CLIENT-SIDE JAVASCRIPT ⚡
+            </p>
+            <p style="color: #00ffff;">
+                <a target="_blank" href="https://github.com/kaaliyv/codedump">View on GitHub</a> |
+                <a target="_blank" href="mailto:joemama.korea-dpr@ties.itu">Email Webmaster</a> |
+                <a href="#top">Back to Top ↑</a>
+            </p>
+            <p style="color: #ffff00; margin-top: 15px; font-size: 12px;">
+                Best viewed at 800x600 resolution<br>
+                © 2025 CodeDump | All Rights Reserved (probably) | Made on caffeine overdose
+            </p>
+        </div>
+    </div>
 
     <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
+        // Animated hit counter
+        let counter = 42069;
+        setInterval(() => {
+            counter += Math.floor(Math.random() * 3);
+            document.getElementById('hitCounter').textContent = 
+                String(counter).padStart(9, '0');
+        }, 5000);
+
+        // Random color changes for extra chaos
+        setInterval(() => {
+            const colors = ['#ff00ff', '#00ffff', '#ffff00', '#00ff00', '#ff0000'];
+            document.body.style.color = colors[Math.floor(Math.random() * colors.length)];
+        }, 10000);
     </script>
-  </body>
+</body>
 </html>
