@@ -12,6 +12,10 @@ A personal landfill of front-end experiments, weekend tinkering, and those 2 A
 
 ### How to Explore
 
+#### Option 1: 
+Click here -> https://aliyevk1.github.io/codedump/
+
+#### Option 2 (Local):
 1. Open [`index.html`](./index.html).
 2. Click whatever sounds least likely to crash.
 3. Enjoy (or regret).
